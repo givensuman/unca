@@ -14,8 +14,8 @@ void draw() {
 }
 
 void mousePressed() {
-  int row = (int) mouseX / (height / Grid.COLUMNS);
-  int column = (int) mouseY / (width / Grid.ROWS);
+  int row = (int) mouseY / (height / Grid.ROWS);
+  int column = (int) mouseX / (width / Grid.COLUMNS);
 
   if (mouseButton == LEFT) {
     if (!gameIsStarted) {
@@ -44,6 +44,7 @@ void mousePressed() {
  
  Animations for win/loss
  Convert images to .svg
+ Win condition met only when all flags placed
  
  Presentation sequence:
  

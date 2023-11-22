@@ -5,8 +5,8 @@ enum GameState {
 }
 
 class Grid {
-  public static final int ROWS = 10;
-  public static final int COLUMNS = 10;
+  public static final int ROWS = 25;
+  public static final int COLUMNS = 25;
   public static final int BOMBS = 3;
 
   private Cell[][] grid;
@@ -19,7 +19,7 @@ class Grid {
     }
 
     if (Grid.BOMBS >= (ROWS * COLUMNS - 9)) {
-      throw new Error("[ERROR] Too many bombs declared for grid of size " + ROWS * COLUMNS);
+      throw new Error("Too many bombs declared for grid of size " + ROWS * COLUMNS);
     }
 
     if (ROWS != COLUMNS) {
@@ -56,7 +56,7 @@ class Grid {
 
     int whileIndex = 0;
     while (Arrays.asList(bombs).contains(null)) {
-      PVector nextBomb = new PVector(random(0, COLUMNS), random(0, ROWS));
+      PVector nextBomb = new PVector(random(0, ROWS), random(0, COLUMNS));
       while (
         Arrays.asList(bombs).contains(nextBomb)
         || (nextBomb.x >= column - 1 && nextBomb.x <= column + 1)
@@ -70,7 +70,7 @@ class Grid {
     }
 
     for (int i = 0; i < bombs.length; i++) {
-      this.grid[(int) bombs[i].y][(int) bombs[i].x].makeBomb();
+      this.grid[(int) bombs[i].x][(int) bombs[i].y].makeBomb();
     }
   }
 
@@ -97,9 +97,10 @@ class Grid {
   public void checkIfGameIsWon() {
     for (int row = 0; row < Grid.ROWS; row++) {
       for (int column = 0; column < Grid.COLUMNS; column++) {
-        if (!this.grid[row][column].getIsRevealed() && !this.grid[row][column].getIsBomb()) {
-          return;
-        }
+        Cell cell = this.grid[row][column];
+        
+        if (!cell.getIsBomb() && !cell.getIsRevealed()) return;
+        if (cell.getIsBomb() && !cell.getIsFlag()) return;
       }
     }
 
