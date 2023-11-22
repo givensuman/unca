@@ -4,9 +4,9 @@ class Cell {
 
   private int row;
   private int column;
+  private int bombsNearby = 0;
   private boolean isBomb = false;
   private boolean isFlag = false;
-  private int nearbyBombs = 0;
   private boolean isRevealed = false;
 
   Cell(int row, int column) {
@@ -30,7 +30,7 @@ class Cell {
     return this.isBomb;
   }
 
-  public void toggleFlag() {
+  public void toggleIsFlag() {
     this.isFlag = !this.isFlag;
   }
 
@@ -38,47 +38,117 @@ class Cell {
     return this.isFlag;
   }
 
-  public void addNearbyBomb() {
-    this.nearbyBombs++;
+  public int getBombsNearby() {
+    return this.bombsNearby;
   }
 
-  public int getNearbyBombs() {
-    return this.nearbyBombs;
+  public void setBombsNearby(int bombsNearby) {
+    this.bombsNearby = bombsNearby;
   }
-  
+
   public boolean getIsRevealed() {
-   return this.isRevealed; 
+    return this.isRevealed;
   }
 
-  public void reveal() {
-    this.isRevealed = true;
+  public void setIsRevealed(boolean isRevealed) {
+    this.isRevealed = isRevealed;
   }
 
-  public void draw() {
-    strokeWeight(1);
-    fill(255);
-    rect(this.row * WIDTH, this.column * HEIGHT, WIDTH, HEIGHT);
+  public void revealCell() {
+    if (grid == null || this.isRevealed) return;
 
-    if (!isRevealed) {
-      fill(#d8d8d8);
-      rect(this.row * WIDTH, this.column * HEIGHT, WIDTH, HEIGHT);
+    if (this.isBomb) {
+      // Reveal the entire grid, the game's over!
+      for (int row = 0; row < Grid.COLUMNS; row++) {
+        for (int column = 0; column < Grid.ROWS; column++) {
+          grid.get(row, column).setIsRevealed(true);
+        }
+      }
+
+      grid.setGameState(GameState.LOSE);
+
       return;
     }
 
+    this.isRevealed = true;
+    this.isFlag = false;
+
+    // If this is a blank tile, recursively reveal tiles around it
+    if (this.bombsNearby == 0) {
+      for (int row = Math.max(0, this.row - 1); row < Math.min(this.row + 2, Grid.COLUMNS); row++) {
+        for (int column = Math.max(0, this.column - 1); column < Math.min(this.column + 2, Grid.ROWS); column++) {
+          if (row == this.row && column == this.column) {
+            continue;
+          } else {
+            grid.get(row, column).revealCell();
+          }
+        }
+      }
+    }
+  }
+
+  public void draw() {
     PImage image;
 
-    if (this.isFlag) {
-      image = loadImage("flag.png");
-    } else if (this.isBomb) {
-      image = loadImage("bomb.png");
+    if (!this.isRevealed) {
+      // Gray rectangle
+      strokeWeight(1);
+      fill(255 * 0.9);
+      rect(this.row * WIDTH, this.column * HEIGHT, WIDTH, HEIGHT);
+
+      if (this.isFlag) {
+        image = loadImage("flag.png");
+      } else {
+        image = null;
+      }
     } else {
-      image = null;
+      // White rectangle
+      strokeWeight(1);
+      fill(255);
+      rect(this.row * WIDTH, this.column * HEIGHT, WIDTH, HEIGHT);
+
+      if (this.isBomb) {
+        image = loadImage("bomb.png");
+      } else {
+        image = null;
+      }
+
+      if (!this.isFlag && !this.isBomb && this.bombsNearby > 0) {
+        textSize(Math.min(Grid.ROWS * 4, Grid.COLUMNS * 4));
+        switch(this.bombsNearby) {
+        case 1:
+          fill(#0000f2);
+          break;
+        case 2:
+          fill(#007e00);
+          break;
+        case 3:
+          fill(#f90000);
+          break;
+        case 4:
+          fill(#00007a);
+          break;
+        case 5:
+          fill(#7a0100);
+          break;
+        case 6:
+          fill(#007f7b);
+          break;
+        case 7:
+          fill(#010101);
+          break;
+        default:
+          fill(#7b7b7b);
+          break;
+        }
+        text(this.bombsNearby, WIDTH * (this.row + 0.25), HEIGHT * (this.column + 0.75));
+      }
     }
 
-    float imgWidth = WIDTH/3;
-    float imgHeight = HEIGHT/3;
-
     if (image != null) {
+      float imgWidth = WIDTH/3;
+      float imgHeight = HEIGHT/3;
+
       image(
         image,
         (this.row * WIDTH) + WIDTH/2 - imgWidth/3,
@@ -86,37 +156,6 @@ class Cell {
         imgWidth,
         imgHeight
         );
-    } else if (this.nearbyBombs > 0) {
-      textSize(64);
-
-      switch(this.nearbyBombs) {
-      case 1:
-        fill(#0000f2);
-        break;
-      case 2:
-        fill(#007e00);
-        break;
-      case 3:
-        fill(#f90000);
-        break;
-      case 4:
-        fill(#00007a);
-        break;
-      case 5:
-        fill(#7a0100);
-        break;
-      case 6:
-        fill(#007f7b);
-        break;
-      case 7:
-        fill(#010101);
-        break;
-      default:
-        fill(#7b7b7b);
-        break;
-      }
-
-      text(this.nearbyBombs, (this.row + 0.5) * WIDTH - 16, (this.column + 0.5) * HEIGHT + 16);
     }
   }
 }
