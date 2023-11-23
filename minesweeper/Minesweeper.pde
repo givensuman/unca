@@ -28,9 +28,9 @@ void mousePressed() {
 
     GameState gameState = grid.getGameState();
     if (gameState == GameState.WIN) {
-      print("WIN!");
+      print("You won!");
     } else if (gameState == GameState.LOSE) {
-      print("LOSE!");
+      print("You lost...");
     }
   }
 

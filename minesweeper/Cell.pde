@@ -89,16 +89,24 @@ class Cell {
 
   public void draw() {
     PImage image;
+    textFont(createFont("SansSerif", 32));
 
     if (!this.isRevealed) {
-      // Gray rectangle
-      strokeWeight(1);
-      fill(255 * 0.9);
-      rect(this.column * WIDTH, this.row * HEIGHT, WIDTH, HEIGHT);
-      
-      //textSize(Math.min(200/Grid.ROWS, 200/Grid.ROWS));
-      //fill(0);
-      //text(this.row + ", " + this.column, WIDTH * (this.column + 0.25), HEIGHT * (this.row + 0.75));
+      strokeWeight(0);
+      fill(#eeeaee);
+      triangle(
+        this.column * WIDTH, this.row * HEIGHT,
+        (this.column * WIDTH) + WIDTH, this.row * HEIGHT,
+        this.column * WIDTH, (this.row * HEIGHT) + HEIGHT
+        );
+      fill(#9f9d9f);
+      triangle(
+        (this.column * WIDTH) + WIDTH, this.row * HEIGHT,
+        (this.column * WIDTH) + WIDTH, (this.row * HEIGHT) + HEIGHT,
+        this.column * WIDTH, (this.row * HEIGHT) + HEIGHT
+        );
+      fill(#dedade);
+      rect((this.column * WIDTH) + WIDTH * 0.05, (this.row * HEIGHT) + HEIGHT * 0.05, WIDTH * 0.9, HEIGHT * 0.9);
 
       if (this.isFlag) {
         image = loadImage("flag.png");
@@ -106,9 +114,9 @@ class Cell {
         image = null;
       }
     } else {
-      // White rectangle
-      strokeWeight(1);
-      fill(255);
+      strokeWeight(2);
+      stroke(#e0dde0);
+      fill(#e6e6e6);
       rect(this.column * WIDTH, this.row * HEIGHT, WIDTH, HEIGHT);
 
       if (this.isBomb) {

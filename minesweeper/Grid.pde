@@ -5,9 +5,9 @@ enum GameState {
 }
 
 class Grid {
-  public static final int ROWS = 25;
-  public static final int COLUMNS = 25;
-  public static final int BOMBS = 3;
+  public static final int ROWS = 10;
+  public static final int COLUMNS = 10;
+  public static final int BOMBS = 10;
 
   private Cell[][] grid;
   private GameState gameState = GameState.PLAYING;
@@ -59,8 +59,8 @@ class Grid {
       PVector nextBomb = new PVector(random(0, ROWS), random(0, COLUMNS));
       while (
         Arrays.asList(bombs).contains(nextBomb)
-        || (nextBomb.x >= column - 1 && nextBomb.x <= column + 1)
-        || (nextBomb.y >= row - 1 && nextBomb.y <= row + 1)
+        || (nextBomb.y >= column - 1 && nextBomb.y <= column + 1)
+        || (nextBomb.x >= row - 1 && nextBomb.x <= row + 1)
         ) {
         nextBomb = new PVector(random(0, ROWS), random(0, COLUMNS));
       }
