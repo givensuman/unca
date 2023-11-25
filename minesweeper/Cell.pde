@@ -1,6 +1,6 @@
 class Cell {
-  public final float HEIGHT = height/Grid.COLUMNS;
-  public final float WIDTH = width/Grid.ROWS;
+  public final float HEIGHT = height/Grid.ROWS;
+  public final float WIDTH = width/Grid.COLUMNS;
 
   private int row;
   private int column;
@@ -89,12 +89,24 @@ class Cell {
 
   public void draw() {
     PImage image;
+    textFont(createFont("SansSerif", 32));
 
     if (!this.isRevealed) {
-      // Gray rectangle
-      strokeWeight(1);
-      fill(255 * 0.9);
-      rect(this.row * WIDTH, this.column * HEIGHT, WIDTH, HEIGHT);
+      strokeWeight(0);
+      fill(#eeeaee);
+      triangle(
+        this.column * WIDTH, this.row * HEIGHT,
+        (this.column * WIDTH) + WIDTH, this.row * HEIGHT,
+        this.column * WIDTH, (this.row * HEIGHT) + HEIGHT
+        );
+      fill(#9f9d9f);
+      triangle(
+        (this.column * WIDTH) + WIDTH, this.row * HEIGHT,
+        (this.column * WIDTH) + WIDTH, (this.row * HEIGHT) + HEIGHT,
+        this.column * WIDTH, (this.row * HEIGHT) + HEIGHT
+        );
+      fill(#dedade);
+      rect((this.column * WIDTH) + WIDTH * 0.05, (this.row * HEIGHT) + HEIGHT * 0.05, WIDTH * 0.9, HEIGHT * 0.9);
 
       if (this.isFlag) {
         image = loadImage("flag.png");
@@ -102,10 +114,10 @@ class Cell {
         image = null;
       }
     } else {
-      // White rectangle
-      strokeWeight(1);
-      fill(255);
-      rect(this.row * WIDTH, this.column * HEIGHT, WIDTH, HEIGHT);
+      strokeWeight(2);
+      stroke(#e0dde0);
+      fill(#e6e6e6);
+      rect(this.column * WIDTH, this.row * HEIGHT, WIDTH, HEIGHT);
 
       if (this.isBomb) {
         image = loadImage("bomb.png");
@@ -114,7 +126,7 @@ class Cell {
       }
 
       if (!this.isFlag && !this.isBomb && this.bombsNearby > 0) {
-        textSize(Math.min(Grid.ROWS * 4, Grid.COLUMNS * 4));
+        textSize(Math.min(300/Grid.ROWS, 300/Grid.COLUMNS));
         switch(this.bombsNearby) {
         case 1:
           fill(#0000f2);
@@ -141,7 +153,7 @@ class Cell {
           fill(#7b7b7b);
           break;
         }
-        text(this.bombsNearby, WIDTH * (this.row + 0.25), HEIGHT * (this.column + 0.75));
+        text(this.bombsNearby, WIDTH * (this.column + 0.33), HEIGHT * (this.row + 0.75));
       }
     }
 
@@ -151,8 +163,8 @@ class Cell {
 
       image(
         image,
-        (this.row * WIDTH) + WIDTH/2 - imgWidth/3,
-        (this.column * HEIGHT) + HEIGHT/2 - imgHeight/3,
+        (this.column * WIDTH) + WIDTH/2 - imgWidth/3,
+        (this.row * HEIGHT) + HEIGHT/2 - imgHeight/3,
         imgWidth,
         imgHeight
         );
