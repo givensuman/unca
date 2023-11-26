@@ -1,15 +1,13 @@
-package edu.unca.csci201;
+public class Knight extends ChessPiece {
 
-public class Pawn extends ChessPiece {
-	
-	Pawn(int color) {
+	Knight(int color) {
 		super(color);
-		super.abbreviation = 'P';
+		super.abbreviation = 'N';
 	}
 	
-	Pawn(int color, String position) {
+	Knight(int color, String position) {
 		super(color, position);
-		super.abbreviation = 'P';
+		super.abbreviation = 'N';
 	}
 	
 	public boolean validMove(String code) {

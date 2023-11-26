@@ -1,5 +1,3 @@
-package edu.unca.csci201;
-
 import java.util.HashMap;
 
 public class ChessBoard {
@@ -11,7 +9,7 @@ public class ChessBoard {
 	
 	private boolean isValidBoardPosition(String code) {
 		char letter = code.toUpperCase().charAt(0);
-		char number = code.toUpperCase().charAt(1);
+		int number = Integer.parseInt(code.substring(1));
 		
 		if (
 			(letter >= 'A' && letter <= 'H')
@@ -21,7 +19,11 @@ public class ChessBoard {
 		return false;
 	}
 	
-	private HashMap<String, Integer> extractPositionFromCode(String code) {
+	/**
+	 * @param code
+	 * @return positional indices of row and column as a HashMap with keys "row" and "column"
+	 */
+	public HashMap<String, Integer> extractPositionFromCode(String code) {
 		int columnIndex = Character.getNumericValue(code.toUpperCase().charAt(0)) - 10;
 		int rowIndex = Integer.parseInt(code.substring(1)) - 1;
 		
@@ -36,14 +38,14 @@ public class ChessBoard {
 		HashMap<String, Integer> position = extractPositionFromCode(code);
 		
 		if (isValidBoardPosition(code)) {
-			this.board[position.get("column")][position.get("row")] = piece;
+			this.board[position.get("row")][position.get("column")] = piece;
 		}
 	}
 
 	// returns the captured ChessPiece or null
 	public ChessPiece move(String codeStart, String codeEnd) throws IllegalMoveException {
-		if (!isValidBoardPosition(codeStart)) throw new IllegalMoveException("Starting position is not valid.");
-		if (!isValidBoardPosition(codeEnd)) throw new IllegalMoveException("Ending position is not valid.");
+		if (!isValidBoardPosition(codeStart)) throw new IllegalMoveException("Starting position [" + codeStart + "] is not valid.");
+		if (!isValidBoardPosition(codeEnd)) throw new IllegalMoveException("Ending position [" + codeEnd + "] is not valid.");
 		
 		HashMap<String, Integer> piecePosition = extractPositionFromCode(codeStart);
 		ChessPiece piece = this.board[piecePosition.get("column")][piecePosition.get("row")];
