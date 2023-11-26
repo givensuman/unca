@@ -30,6 +30,10 @@ public class ChessBoard {
 		HashMap<String, Integer> positions = new HashMap<String, Integer>();
 		positions.put("column", columnIndex);
 		positions.put("row", rowIndex);
+
+		// System.out.println("You're in extractPositionFromCode");
+		// System.out.println("code="+code);
+		// System.out.println("rowIndex="+rowIndex + ", columnIndex="+columnIndex);
 		
 		return positions;
 	}
@@ -39,6 +43,7 @@ public class ChessBoard {
 		
 		if (isValidBoardPosition(code)) {
 			this.board[position.get("row")][position.get("column")] = piece;
+			piece.setPosition(code);
 		}
 	}
 
@@ -48,15 +53,16 @@ public class ChessBoard {
 		if (!isValidBoardPosition(codeEnd)) throw new IllegalMoveException("Ending position [" + codeEnd + "] is not valid.");
 		
 		HashMap<String, Integer> piecePosition = extractPositionFromCode(codeStart);
-		ChessPiece piece = this.board[piecePosition.get("column")][piecePosition.get("row")];
+		ChessPiece piece = this.board[piecePosition.get("row")][piecePosition.get("column")];
 		
 		if (!piece.validMove(codeEnd)) throw new IllegalMoveException();
 		
 		HashMap<String, Integer> capturedPiecePosition = extractPositionFromCode(codeEnd);
-		ChessPiece capturedPiece = this.board[capturedPiecePosition.get("column")][capturedPiecePosition.get("row")];
+		ChessPiece capturedPiece = this.board[capturedPiecePosition.get("row")][capturedPiecePosition.get("column")];
 		
-		this.board[capturedPiecePosition.get("column")][capturedPiecePosition.get("row")] = piece;
-		this.board[piecePosition.get("column")][piecePosition.get("row")] = null;
+		this.board[capturedPiecePosition.get("row")][capturedPiecePosition.get("column")] = piece;
+		piece.setPosition(codeEnd);
+		this.board[piecePosition.get("row")][piecePosition.get("column")] = null;
 		
 		return capturedPiece;
 	}
@@ -73,8 +79,8 @@ public class ChessBoard {
 		}
 		out+="\n";
 
-		for (int i=0; i<board.length; i++) {
-			out+=(8-i)+" | ";
+		for (int i=board.length - 1; i>=0; i--) {
+			out+=(i+1)+" | ";
 			for (int j=0; j<board[i].length; j++) {
 				ChessPiece piece = board[i][j];
 				if (piece==null) {

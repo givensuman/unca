@@ -12,7 +12,7 @@ public class Pawn extends ChessPiece {
 	
 	public boolean validMove(String code) {
 		char letter = code.toUpperCase().charAt(0);
-		char number = code.toUpperCase().charAt(1);
+		int number = Integer.parseInt(code.substring(1));
 		
 		if (
 			(letter >= 'A' && letter <= 'H')
