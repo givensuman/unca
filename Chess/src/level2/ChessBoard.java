@@ -1,7 +1,7 @@
 import java.util.HashMap;
 
 public class ChessBoard {
-	public static ChessPiece[][] board;
+	private ChessPiece[][] board;
 
 	public ChessBoard() {
 		board = new ChessPiece[8][8];
@@ -23,13 +23,17 @@ public class ChessBoard {
 	 * @return positional indices of row and column as a HashMap with keys "row" and
 	 *         "column"
 	 */
-	public static HashMap<String, Integer> extractPositionFromCode(String code) {
+	public HashMap<String, Integer> extractPositionFromCode(String code) {
 		int columnIndex = Character.getNumericValue(code.toUpperCase().charAt(0)) - 10;
 		int rowIndex = Integer.parseInt(code.substring(1)) - 1;
 
 		HashMap<String, Integer> positions = new HashMap<String, Integer>();
 		positions.put("column", columnIndex);
 		positions.put("row", rowIndex);
+
+		// System.out.println("You're in extractPositionFromCode");
+		// System.out.println("code="+code);
+		// System.out.println("rowIndex="+rowIndex + ", columnIndex="+columnIndex);
 
 		return positions;
 	}
@@ -57,14 +61,19 @@ public class ChessBoard {
 			throw new IllegalMoveException();
 
 		HashMap<String, Integer> capturedPiecePosition = extractPositionFromCode(codeEnd);
-		ChessPiece capturedPiece = board[capturedPiecePosition.get("row")][capturedPiecePosition.get("column")];
+		ChessPiece capturedPiece = this.board[capturedPiecePosition.get("row")][capturedPiecePosition.get("column")];
 
-		board[capturedPiecePosition.get("row")][capturedPiecePosition.get("column")] = piece;
+		this.board[capturedPiecePosition.get("row")][capturedPiecePosition.get("column")] = piece;
 		piece.setPosition(codeEnd);
-		board[piecePosition.get("row")][piecePosition.get("column")] = null;
+		this.board[piecePosition.get("row")][piecePosition.get("column")] = null;
 
-		if (piece.abbreviation == 'P')
-			((Pawn) piece).setHasMoved();
+		// if (capturedPiece != null) {
+		// System.out.println("You're in ChessBoard.move!");
+		// System.out.println("capturedPiece=" + capturedPiece.toString());
+		// } else {
+		// System.out.println("You're in ChessBoard.move!");
+		// System.out.println("capturedPiece=null");
+		// }
 
 		return capturedPiece;
 	}
